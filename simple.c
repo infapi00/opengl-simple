@@ -59,11 +59,32 @@ check_correct_image()
 }
 
 static void
+write_pixels_to_file()
+{
+   GLubyte data[WIDTH * HEIGHT * 4];
+   glReadPixels(0, 0, WIDTH, HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+   FILE *out = fopen("out.tga","wb");
+   uint8_t TGAhead[] = { 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                         WIDTH, 0, HEIGHT, 0, 24, 0 };
+   fwrite(&TGAhead, sizeof(TGAhead), 1, out);
+   for (int i = 0; i < WIDTH; i++) {
+      for (int j = 0; j < HEIGHT; j++) {
+          fwrite(&data[(i * WIDTH + j) * 4], 3, 1, out);
+      }
+   }
+   fclose(out);
+}
+
+
+static void
 scene_render (void)
 {
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
   glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
+
+  write_pixels_to_file();
 
   if (verify_result && !check_correct_image()) {
     fprintf(stderr, "ERROR: image on FBO is wrong.\n");
