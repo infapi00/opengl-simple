@@ -1,7 +1,19 @@
 #version 310 es
 
-in vec2 attr_pos;
-
-void main() {
-   gl_Position = vec4(attr_pos, 1.0f, 1.0f);
+void main()
+{
+   switch (gl_VertexID) {
+   case 0:
+      gl_Position = vec4( 1.0,  1.0, 0.0, 1.0);
+      break;
+   case 1:
+      gl_Position = vec4( 1.0, -1.0, 0.0, 1.0);
+      break;
+   case 2:
+      gl_Position = vec4(-1.0,  1.0, 0.0, 1.0);
+      break;
+   case 3:
+      gl_Position = vec4(-1.0, -1.0, 0.0, 1.0);
+      break;
+   }
 }
