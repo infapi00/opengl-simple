@@ -26,6 +26,7 @@ GLuint color_rb;
 GLuint fbo;
 
 bool verify_result = false;
+bool do_clear = false;
 
 static bool
 check_correct_image()
@@ -82,7 +83,12 @@ scene_render (void)
 {
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-  glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
+  if (do_clear) {
+     glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+     glClear(GL_COLOR_BUFFER_BIT);
+  } else {
+     glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
+  }
 
   write_pixels_to_file();
 
@@ -150,8 +156,13 @@ parse_args(int argc, char *argv[])
    for (unsigned arg = 1; arg < argc; arg++) {
       if (strcmp(argv[arg], "--verify") == 0) {
          verify_result = true;
+      } if (strcmp(argv[arg], "--clear") == 0) {
+         do_clear = true;
       } else {
-         printf("Incorrect options. Allowed options:\n\t --verify\n");
+         printf("Incorrect options. Allowed options:"
+                "\n\t --verify: check if the result image matches expectation."
+                "\n\t --clear:  only clear the render target."
+                "\n");
          exit(EXIT_FAILURE);
       }
    }
