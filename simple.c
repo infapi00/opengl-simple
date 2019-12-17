@@ -32,7 +32,7 @@ static bool
 check_correct_image()
 {
    GLubyte pixels[WIDTH * HEIGHT * 4];
-   GLubyte expected[4] = {0, 255, 0, 255};
+   GLubyte expected[4] = {255, 255, 0, 255};
    unsigned count_wrong = 0;
 
    glReadPixels(0, 0, WIDTH, HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
@@ -71,7 +71,9 @@ write_pixels_to_file()
    fwrite(&TGAhead, sizeof(TGAhead), 1, out);
    for (int i = 0; i < WIDTH; i++) {
       for (int j = 0; j < HEIGHT; j++) {
-          fwrite(&data[(i * WIDTH + j) * 4], 3, 1, out);
+          fwrite(&data[(i * WIDTH + j) * 4] + 2, 1, 1, out); // B
+          fwrite(&data[(i * WIDTH + j) * 4] + 1, 1, 1, out); // G
+          fwrite(&data[(i * WIDTH + j) * 4] + 0, 1, 1, out); // R
       }
    }
    fclose(out);
@@ -84,7 +86,7 @@ scene_render (void)
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
   if (do_clear) {
-     glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+     glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
      glClear(GL_COLOR_BUFFER_BIT);
   } else {
      glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
