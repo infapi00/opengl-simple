@@ -158,7 +158,7 @@ parse_args(int argc, char *argv[])
    for (unsigned arg = 1; arg < argc; arg++) {
       if (strcmp(argv[arg], "--verify") == 0) {
          verify_result = true;
-      } if (strcmp(argv[arg], "--clear") == 0) {
+      } else if (strcmp(argv[arg], "--clear") == 0) {
          do_clear = true;
       } else {
          printf("Incorrect options. Allowed options:"
